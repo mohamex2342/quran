@@ -1,135 +1,43 @@
-/* المتغيرات الجمالية: دمج التدرجات الداكنة مع توهج النيون */
-:root {
-    --bg-dark: #05050a;
-    --bg-gradient: linear-gradient(135deg, #0f172a, #020617);
-    --neon-teal: #0df5d4;
-    --neon-glow: 0 0 10px rgba(13, 245, 212, 0.4), 0 0 20px rgba(13, 245, 212, 0.2);
-    --glass-bg: rgba(15, 23, 42, 0.6);
-    --glass-border: rgba(13, 245, 212, 0.2);
-    --text-light: #f8fafc;
-    --text-muted: #94a3b8;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+/* الإعدادات العامة */
 body {
-    background: var(--bg-gradient);
-    background-attachment: fixed;
-    color: var(--text-light);
-    line-height: 1.6;
-}
-
-.font-amiri { font-family: 'Amiri', serif; }
-.font-kufi { font-family: 'Noto Kufi Arabic', sans-serif; }
-
-/* التوهجات (Neon) */
-.neon-text {
-    color: var(--neon-teal);
-    text-shadow: var(--neon-glow);
-}
-
-.neon-btn {
-    background: transparent;
-    color: var(--neon-teal);
-    border: 1px solid var(--neon-teal);
-    padding: 12px 24px;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow: var(--neon-glow);
-    transition: all 0.3s ease;
-    width: 100%;
     font-family: 'Noto Kufi Arabic', sans-serif;
+    background-color: #020617;
+    color: #f8fafc;
+    overflow-x: hidden;
 }
 
-.neon-btn:hover {
-    background: var(--neon-teal);
-    color: var(--bg-dark);
-    box-shadow: 0 0 20px rgba(13, 245, 212, 0.6);
+/* تأثير الزجاج (Glassmorphism) */
+.glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.1);
 }
 
-/* التخطيط العام */
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-.section-title { text-align: center; font-size: 2.5rem; margin-bottom: 40px; }
-
-/* الهيدر الزجاجي (Glassmorphism) */
-.glass-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(2, 6, 23, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--glass-border);
+/* توهج النيون للأيقونات والأزرار */
+.neon-glow {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
 }
 
-.header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
-.logo { font-size: 1.8rem; font-weight: bold; color: var(--neon-teal); }
-.main-nav a { color: var(--text-light); text-decoration: none; margin-right: 20px; transition: color 0.3s; }
-.main-nav a:hover { color: var(--neon-teal); }
-
-/* البطل */
-.hero { text-align: center; padding: 100px 20px; border-bottom: 1px solid var(--glass-border); }
-.hero h1 { font-size: 4rem; margin-bottom: 10px; }
-.bism { font-size: 2rem; margin-bottom: 20px; color: var(--text-muted); }
-
-/* الحاويات الزجاجية */
-.glass-panel {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 24px;
-    backdrop-filter: blur(5px);
+/* تخصيص مظهر شريط التمرير */
+::-webkit-scrollbar {
+    width: 6px;
 }
-
-/* منشئ الفيديو */
-.creator-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-@media (min-width: 992px) { .creator-grid { grid-template-columns: 350px 1fr; } }
-
-.form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); }
-.flex-group { display: flex; gap: 15px; }
-.flex-group > div { flex: 1; }
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--glass-border);
-    color: var(--text-light);
-    border-radius: 4px;
-    font-family: 'Noto Kufi Arabic', sans-serif;
+::-webkit-scrollbar-track {
+    background: #020617;
 }
-input:focus, select:focus { outline: none; border-color: var(--neon-teal); }
-
-canvas { width: 100%; max-width: 100%; background-color: #000; border-radius: 8px; border: 1px solid var(--glass-border); }
-
-/* شريط التقدم */
-.hidden { display: none; }
-.progress-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; margin-top: 15px; overflow: hidden; }
-#progress-fill { height: 100%; width: 0%; background: var(--neon-teal); box-shadow: var(--neon-glow); transition: width 0.3s; }
-
-/* شبكة الفيديوهات */
-.videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-.video-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
     border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
 }
-.video-card:hover { transform: translateY(-5px); box-shadow: var(--neon-glow); }
-.video-thumb { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--glass-border); }
-.video-info { padding: 15px; }
-.video-info h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--text-light); }
-.video-link {
-    display: inline-block;
-    color: var(--bg-dark);
-    background: var(--neon-teal);
-    padding: 8px 15px;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
+::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
 }
 
-footer { text-align: center; padding: 30px; border-top: 1px solid var(--glass-border); background: rgba(2, 6, 23, 0.9); }
+/* حركة بسيطة للـ Canvas لإعطائه عمق */
+#main-canvas {
+    transition: transform 0.5s ease;
+}
+
+.font-quran {
+    font-family: 'Amiri', serif;
+}
