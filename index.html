@@ -4,396 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فيديوهات القرآن الكريم</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="header" id="main-header">
-        <div class="header-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-mosque"></i>
-                </div>
-                <div class="logo-text">
-                    <span class="logo-title">فيديوهات القرآن</span>
-                    <span class="logo-sub">القرآن الكريم</span>
-                </div>
-            </div>
-
-            <nav class="desktop-nav">
-                <a href="#" class="nav-link active" data-page="home">
-                    <i class="fas fa-home"></i> الرئيسية
-                </a>
-                <a href="#" class="nav-link" data-page="creator">
-                    <i class="fas fa-video"></i> إنشاء تلاوة
-                </a>
-                <a href="#" class="nav-link" data-page="videos">
-                    <i class="fas fa-film"></i> الفيديوهات
-                </a>
+    <header class="glass-header">
+        <div class="container header-content">
+            <div class="logo font-amiri">فيديوهات القرآن</div>
+            <nav class="main-nav font-kufi">
+                <a href="#home">الرئيسية</a>
+                <a href="#creator">إنشاء تلاوة</a>
+                <a href="#videos">الفيديوهات</a>
             </nav>
-
-            <button class="hamburger" id="hamburger-btn" aria-label="القائمة">
-                <span></span><span></span><span></span>
-            </button>
         </div>
-
-        <!-- Mobile Nav -->
-        <nav class="mobile-nav" id="mobile-nav">
-            <a href="#" class="nav-link active" data-page="home">
-                <i class="fas fa-home"></i> الرئيسية
-            </a>
-            <a href="#" class="nav-link" data-page="creator">
-                <i class="fas fa-video"></i> إنشاء تلاوة
-            </a>
-            <a href="#" class="nav-link" data-page="videos">
-                <i class="fas fa-film"></i> الفيديوهات
-            </a>
-        </nav>
     </header>
 
-    <!-- ===== HOME PAGE ===== -->
-    <main id="page-home" class="page active">
+    <section id="home" class="hero">
+        <h1 class="font-amiri neon-text">فيديوهات القرآن الكريم</h1>
+        <p class="font-amiri bism">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+        <p class="font-kufi desc">استعرض أحدث الفيديوهات وأنشئ تلاوتك الخاصة بواجهة متطورة.</p>
+    </section>
 
-        <!-- Hero -->
-        <section class="hero" id="hero-section">
-            <div class="hero-bg"></div>
-            <div class="hero-content">
-                <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-                <h1>فيديوهات القرآن الكريم</h1>
-                <p class="hero-desc">استمتع بمشاهدة تلاوات القرآن الكريم بأصوات أشهر القراء، وأنشئ فيديو تلاوتك الخاصة بجودة احترافية</p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-num">+100</span>
-                        <span class="stat-label">فيديو متاح</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-num">+50</span>
-                        <span class="stat-label">قارئ محترف</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-num">114</span>
-                        <span class="stat-label">سورة كريمة</span>
-                    </div>
-                </div>
-                <div class="hero-actions">
-                    <button class="btn-primary" data-page="creator">
-                        <i class="fas fa-plus-circle"></i> أنشئ تلاوتك
-                    </button>
-                    <button class="btn-secondary" data-page="videos">
-                        <i class="fas fa-play-circle"></i> استعرض الفيديوهات
-                    </button>
-                </div>
-            </div>
-            <div class="hero-decoration">
-                <div class="deco-circle c1"></div>
-                <div class="deco-circle c2"></div>
-                <div class="deco-circle c3"></div>
-            </div>
-        </section>
-
-        <!-- Features -->
-        <section class="features-section">
-            <div class="container">
-                <h2 class="section-title">مميزات الموقع</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-microphone-alt"></i></div>
-                        <h3>أفضل القراء</h3>
-                        <p>اختر من بين أكثر من 50 قارئ قرآني متميز</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-quran"></i></div>
-                        <h3>نص عثماني</h3>
-                        <p>عرض الآيات بالخط العثماني الأصيل</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-download"></i></div>
-                        <h3>تحميل بجودة عالية</h3>
-                        <p>تصدير الفيديو بدقة 720p مع صوت مدمج</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="fas fa-palette"></i></div>
-                        <h3>خلفيات مخصصة</h3>
-                        <p>اختر خلفية تلاوتك من تدرج أو رابط أو ملف</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Latest Videos -->
-        <section class="latest-videos-section">
-            <div class="container">
-                <h2 class="section-title">أحدث الفيديوهات</h2>
-                <div class="videos-grid" id="home-videos-grid">
-                    <div class="loading-state">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>جاري التحميل...</p>
-                    </div>
-                </div>
-                <div class="center-btn" style="margin-top:2rem;">
-                    <button class="btn-outline" data-page="videos">
-                        <i class="fas fa-film"></i> عرض جميع الفيديوهات
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ===== CREATOR PAGE ===== -->
-    <main id="page-creator" class="page">
-        <div class="container">
-            <div class="page-header">
-                <h2><i class="fas fa-video"></i> إنشاء تلاوة</h2>
-                <p>اختر القارئ والسورة والآيات لإنشاء فيديو تلاوة مخصص</p>
-            </div>
-
-            <div class="creator-layout">
-                <!-- Settings Panel -->
-                <aside class="creator-settings" id="creator-settings">
-
-                    <!-- Step 1: Reciter -->
-                    <div class="settings-card">
-                        <div class="card-header">
-                            <span class="step-badge">1</span>
-                            <h3>اختيار القارئ</h3>
-                        </div>
-                        <div class="form-group">
-                            <label for="reciter-select">القارئ</label>
-                            <select id="reciter-select" class="form-control">
-                                <option value="">جاري تحميل القراء...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="moshaf-select">الرواية / المصحف</label>
-                            <select id="moshaf-select" class="form-control" disabled>
-                                <option value="">اختر القارئ أولاً</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Surah & Verses -->
-                    <div class="settings-card">
-                        <div class="card-header">
-                            <span class="step-badge">2</span>
-                            <h3>اختيار السورة والآيات</h3>
-                        </div>
-                        <div class="form-group">
-                            <label for="surah-select">السورة</label>
-                            <select id="surah-select" class="form-control">
-                                <option value="">جاري تحميل السور...</option>
-                            </select>
-                        </div>
-                        <div class="verse-range">
-                            <div class="form-group">
-                                <label for="verse-from">من الآية</label>
-                                <input type="number" id="verse-from" class="form-control" min="1" value="1">
-                            </div>
-                            <div class="range-arrow"><i class="fas fa-arrows-alt-h"></i></div>
-                            <div class="form-group">
-                                <label for="verse-to">إلى الآية</label>
-                                <input type="number" id="verse-to" class="form-control" min="1" value="7">
-                            </div>
-                        </div>
-                        <div class="verse-info" id="verse-info">
-                            <i class="fas fa-info-circle"></i>
-                            <span id="verse-count-text">سيتم عرض الآيات من 1 إلى 7</span>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Background -->
-                    <div class="settings-card">
-                        <div class="card-header">
-                            <span class="step-badge">3</span>
-                            <h3>اختيار الخلفية</h3>
-                        </div>
-                        <div class="bg-options">
-                            <label class="bg-option active" id="bg-auto-label">
-                                <input type="radio" name="bg-type" value="auto" checked>
-                                <div class="bg-preview auto-bg"></div>
-                                <span>تلقائي</span>
-                            </label>
-                            <label class="bg-option" id="bg-url-label">
-                                <input type="radio" name="bg-type" value="url">
-                                <div class="bg-preview url-bg"><i class="fas fa-link"></i></div>
-                                <span>رابط</span>
-                            </label>
-                            <label class="bg-option" id="bg-file-label">
-                                <input type="radio" name="bg-type" value="file">
-                                <div class="bg-preview file-bg"><i class="fas fa-upload"></i></div>
-                                <span>ملف</span>
-                            </label>
-                        </div>
-                        <div id="bg-url-input" class="form-group" style="display:none;">
-                            <input type="text" id="bg-url" class="form-control" placeholder="أدخل رابط الصورة...">
-                            <button class="btn-load" id="load-bg-url"><i class="fas fa-check"></i></button>
-                        </div>
-                        <div id="bg-file-input" style="display:none;">
-                            <label class="file-upload-label">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <span>اختر صورة من جهازك</span>
-                                <input type="file" id="bg-file" accept="image/*">
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Create Button -->
-                    <button class="btn-create" id="btn-create">
-                        <i class="fas fa-magic"></i>
-                        <span>إنشاء التلاوة</span>
-                    </button>
-
-                </aside>
-
-                <!-- Preview Panel -->
-                <div class="creator-preview" id="creator-preview">
-                    <div class="preview-wrapper">
-                        <div class="preview-placeholder" id="preview-placeholder">
-                            <i class="fas fa-film"></i>
-                            <p>اضبط الإعدادات واضغط "إنشاء التلاوة"<br>لرؤية المعاينة</p>
-                        </div>
-
-                        <!-- Canvas Preview -->
-                        <div id="canvas-section" style="display:none;">
-                            <canvas id="preview-canvas" width="1280" height="720"></canvas>
-                            <div class="canvas-controls">
-                                <button class="ctrl-btn" id="btn-play-pause">
-                                    <i class="fas fa-play" id="play-icon"></i>
-                                </button>
-                                <div class="verse-indicator" id="verse-indicator">
-                                    الآية <span id="current-verse-num">1</span> / <span id="total-verses-num">7</span>
-                                </div>
-                                <button class="ctrl-btn" id="btn-stop">
-                                    <i class="fas fa-stop"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Progress -->
-                        <div id="progress-section" style="display:none;">
-                            <div class="progress-info">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <p id="progress-text">جاري إنشاء الفيديو...</p>
-                            </div>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" id="progress-bar"></div>
-                                <span class="progress-pct" id="progress-pct">0%</span>
-                            </div>
-                        </div>
-
-                        <!-- Download -->
-                        <div id="download-section" style="display:none;">
-                            <div class="success-banner">
-                                <i class="fas fa-check-circle"></i>
-                                <p>تم إنشاء الفيديو بنجاح!</p>
-                            </div>
-                            <div class="download-actions">
-                                <a id="download-link" class="btn-download" download="quran-recitation.webm">
-                                    <i class="fas fa-download"></i> تحميل الفيديو (WebM)
-                                </a>
-                                <button class="btn-reset" id="btn-reset">
-                                    <i class="fas fa-redo"></i> إنشاء جديد
-                                </button>
-                            </div>
-                            <video id="preview-video" controls style="width:100%;border-radius:12px;margin-top:1rem;"></video>
-                        </div>
-
-                    </div>
-
-                    <!-- Error -->
-                    <div class="error-banner" id="creator-error" style="display:none;">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p id="error-text">حدث خطأ ما</p>
-                        <button class="btn-retry" id="btn-retry">إعادة المحاولة</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ===== VIDEOS PAGE ===== -->
-    <main id="page-videos" class="page">
-        <div class="container">
-            <div class="page-header">
-                <h2><i class="fas fa-film"></i> الفيديوهات</h2>
-                <p>استعرض مجموعة فيديوهات التلاوة المتاحة</p>
-            </div>
-
-            <!-- Filters -->
-            <div class="videos-filters">
-                <div class="filter-group">
-                    <label for="type-filter">نوع الفيديو</label>
-                    <select id="type-filter" class="form-control">
-                        <option value="">الكل</option>
+    <section id="creator" class="section-container">
+        <h2 class="section-title font-amiri neon-text">إنشاء تلاوة مخصصة</h2>
+        <div class="creator-grid">
+            
+            <div class="control-panel glass-panel font-kufi">
+                <div class="form-group">
+                    <label>اختر القارئ</label>
+                    <select id="reciter-select">
+                        <option value="maher">ماهر المعيقلي</option>
+                        <option value="yasser">ياسر الدوسري</option>
                     </select>
                 </div>
-                <div class="filter-group search-wrap">
-                    <label for="search-input">البحث</label>
-                    <div class="search-inner">
-                        <input type="text" id="search-input" class="form-control" placeholder="ابحث باسم القارئ...">
-                        <i class="fas fa-search"></i>
+                <div class="form-group flex-group">
+                    <div>
+                        <label>من آية</label>
+                        <input type="number" id="start-ayah" value="1" min="1">
                     </div>
+                    <div>
+                        <label>إلى آية</label>
+                        <input type="number" id="end-ayah" value="7" min="1">
+                    </div>
+                </div>
+                <button id="generate-btn" class="neon-btn">إنشاء وتصدير الفيديو</button>
+                <div id="progress-container" class="hidden">
+                    <div class="progress-bar"><div id="progress-fill"></div></div>
                 </div>
             </div>
 
-            <!-- Grid -->
-            <div class="videos-grid" id="all-videos-grid">
-                <div class="loading-state">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>جاري تحميل الفيديوهات...</p>
-                </div>
+            <div class="preview-panel glass-panel">
+                <h3 class="font-kufi">المعاينة الحية</h3>
+                <canvas id="video-canvas" width="1280" height="720"></canvas>
             </div>
-        </div>
-    </main>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <div class="logo-icon"><i class="fas fa-mosque"></i></div>
-                        <span class="logo-title">فيديوهات القرآن</span>
-                    </div>
-                    <p>منصة متخصصة في عرض وإنشاء فيديوهات تلاوة القرآن الكريم</p>
-                </div>
-                <div class="footer-links">
-                    <h4>روابط سريعة</h4>
-                    <a href="#" data-page="home">الرئيسية</a>
-                    <a href="#" data-page="creator">إنشاء تلاوة</a>
-                    <a href="#" data-page="videos">الفيديوهات</a>
-                </div>
-                <div class="footer-api">
-                    <h4>مصادر البيانات</h4>
-                    <a href="https://mp3quran.net" target="_blank">MP3 Quran API</a>
-                    <a href="https://quran.com" target="_blank">Quran.com API</a>
-                    <a href="https://everyayah.com" target="_blank">EveryAyah</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>جميع الحقوق محفوظة &copy; 2026 — فيديوهات القرآن الكريم</p>
-            </div>
         </div>
+    </section>
+
+    <section id="videos" class="section-container">
+        <h2 class="section-title font-amiri neon-text">أحدث الفيديوهات</h2>
+        <div id="videos-grid" class="videos-grid">
+            <div class="loading font-kufi">جاري تحميل الفيديوهات من الخادم...</div>
+        </div>
+    </section>
+
+    <footer class="font-kufi">
+        <p>جميع الحقوق محفوظة © فيديوهات القرآن | تنفيذ مباشر للبيانات</p>
     </footer>
 
-    <!-- Video Modal -->
-    <div class="video-modal" id="video-modal">
-        <div class="modal-overlay" id="modal-overlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
-            <h3 id="modal-title">اسم القارئ</h3>
-            <video id="modal-video" controls playsinline webkit-playsinline>
-                <source src="" type="video/mp4">
-            </video>
-        </div>
-    </div>
-
-    <script src="js/app.js"></script>
-    <script src="js/creator.js"></script>
+    <script src="script/script.js"></script>
 </body>
 </html>
