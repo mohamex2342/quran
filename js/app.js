@@ -8,9 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let particles = [];
     let animationId;
     let versesText = "بسم الله الرحمن الرحيم";
-    let audioContext, audioTag; // متغيرات الصوت
+    
+    // متغيرات الصوت والمحلل
+    let audioContext, analyser, dataArray, source;
+    let audioTag = new Audio();
+    audioTag.crossOrigin = "anonymous";
 
-    // 1. نظام الجزيئات المتحركة (نفس الكود السابق)
+    // 1. نظام الجزيئات الخلفية
     class Particle {
         constructor() { this.reset(); }
         reset() {
@@ -22,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.opacity = Math.random() * 0.5;
         }
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
+            this.x += this.speedX; this.y += this.speedY;
             if (this.x > canvas.width || this.x < 0 || this.y > canvas.height || this.y < 0) this.reset();
         }
         draw() {
@@ -37,14 +40,50 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 150; i++) particles.push(new Particle());
     }
 
-    // 2. جلب رابط الصوت والآيات
+    // 2. إعداد محلل الصوت (Visualizer Engine)
+    function setupVisualizer() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            source = audioContext.createMediaElementSource(audioTag);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            analyser.fftSize = 256; // عدد الأعمدة
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+        }
+    }
+
+    function drawVisualizer() {
+        if (!analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+
+        const barWidth = (canvas.width / dataArray.length) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            barHeight = dataArray[i] * 1.5; // قوة التفاعل
+
+            // لون النيون للأعمدة
+            ctx.fillStyle = `rgba(16, 185, 129, ${barHeight / 255})`;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#10b981';
+            
+            // رسم الأعمدة في أسفل الشاشة
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+            
+            x += barWidth + 1;
+        }
+        ctx.shadowBlur = 0; // تنظيف التوهج لعدم التأثير على النص
+    }
+
+    // 3. وظائف جلب البيانات
     async function getSurahData(reciterId, surahNum) {
-        // جلب تفاصيل القارئ للحصول على "السيرفر" الخاص به
         const res = await fetch(`https://mp3quran.net/api/v3/reciters?language=ar&reciter=${reciterId}`);
         const data = await res.json();
         const server = data.reciters[0].moshaf[0].server;
-        const formattedSurah = surahNum.toString().padStart(3, '0');
-        return `${server}${formattedSurah}.mp3`;
+        return `${server}${surahNum.toString().padStart(3, '0')}.mp3`;
     }
 
     async function fetchVerses(surah, start, end) {
@@ -56,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).map(v => v.text_uthmani).join(' ۞ ');
     }
 
-    // 3. المحرك البصري
+    // 4. حلقة الرندر المركزية
     function render() {
         const style = document.getElementById('visual-style').value;
         const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/1.2);
@@ -67,18 +106,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         particles.forEach(p => { p.update(); p.draw(); });
 
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.shadowColor = 'rgba(16, 185, 129, 0.4)'; ctx.shadowBlur = 40;
-        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 75px "Amiri"';
-        
-        wrapText(ctx, versesText, canvas.width/2, canvas.height/2, 1600, 110);
+        // رسم المحلل الصوتي
+        drawVisualizer();
 
+        // رسم النص
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.2)'; ctx.shadowBlur = 30;
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 75px "Amiri"';
+        wrapText(ctx, versesText, canvas.width/2, canvas.height/2 - 50, 1600, 110);
+
+        // معلومات القارئ
         ctx.shadowBlur = 0; ctx.font = '35px "Noto Kufi Arabic"';
-        ctx.fillStyle = 'rgba(16, 185, 129, 0.9)';
+        ctx.fillStyle = '#10b981';
         const reciter = document.getElementById('reciter-select').options[document.getElementById('reciter-select').selectedIndex].text;
-        ctx.fillText(`بصوت القارئ: ${reciter}`, canvas.width/2, canvas.height - 120);
+        ctx.fillText(`تلاوة القارئ: ${reciter}`, canvas.width/2, canvas.height - 200);
 
         animationId = requestAnimationFrame(render);
     }
@@ -97,54 +141,43 @@ document.addEventListener('DOMContentLoaded', () => {
         lines.forEach((l, i) => context.fillText(l, x, startY + (i * lineHeight)));
     }
 
-    // 4. دمج الصوت مع الفيديو وتسجيل النتيجة
-    async function createVideoWithAudio(audioUrl) {
-        // تجهيز ملف الصوت
-        audioTag = new Audio();
+    // 5. التسجيل والدمج
+    async function startAction() {
+        loader.classList.remove('hidden');
+        const reciterId = document.getElementById('reciter-select').value;
+        const surahNum = document.getElementById('surah-select').value;
+        
+        const audioUrl = await getSurahData(reciterId, surahNum);
+        versesText = await fetchVerses(surahNum, parseInt(document.getElementById('start-ayah').value), parseInt(document.getElementById('end-ayah').value));
+        
         audioTag.src = audioUrl;
-        audioTag.crossOrigin = "anonymous";
+        setupVisualizer();
         
-        // التقاط مسار الفيديو من الـ Canvas
-        const videoStream = canvas.captureStream(60);
-        
-        // تشغيل الصوت والتقاط مساره
         await audioTag.play();
+        loader.classList.add('hidden');
+        render();
+
+        // تسجيل الفيديو
+        const videoStream = canvas.captureStream(60);
         const audioStream = audioTag.captureStream ? audioTag.captureStream() : audioTag.mozCaptureStream();
+        const combined = new MediaStream([...videoStream.getVideoTracks(), ...audioStream.getAudioTracks()]);
         
-        // دمج المسارين (فيديو + صوت) في بث واحد
-        const combinedStream = new MediaStream([
-            ...videoStream.getVideoTracks(),
-            ...audioStream.getAudioTracks()
-        ]);
-
-        const recorder = new MediaRecorder(combinedStream, { 
-            mimeType: 'video/webm; codecs=vp9', 
-            audioBitsPerSecond: 128000,
-            videoBitsPerSecond: 8000000 
-        });
-
+        const recorder = new MediaRecorder(combined, { mimeType: 'video/webm; codecs=vp9', videoBitsPerSecond: 8000000 });
         const chunks = [];
         recorder.ondataavailable = e => chunks.push(e.data);
         recorder.onstop = () => {
             const blob = new Blob(chunks, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
             downloadArea.classList.remove('hidden');
             document.getElementById('download-btn').onclick = () => {
-                const a = document.createElement('a');
-                a.href = url; a.download = 'Quran_Pro_With_Audio.webm'; a.click();
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                a.download = 'Professional_Quran_Edit.webm'; a.click();
             };
-            audioTag.pause(); // إيقاف الصوت بعد الانتهاء
         };
-
         recorder.start();
-        
-        // التوقف تلقائياً عند انتهاء الصوت أو بعد مدة محددة
-        audioTag.onended = () => recorder.stop();
-        // لإغراض التجربة، سنوقف التسجيل بعد 10 ثوانٍ إذا كان الملف طويلاً جداً
-        setTimeout(() => { if(recorder.state === "recording") recorder.stop(); }, 15000); 
+        setTimeout(() => recorder.stop(), 15000); // تسجيل 15 ثانية للتجربة
     }
 
-    // التهيئة
+    // البداية
     async function init() {
         initParticles();
         const rRes = await fetch('https://mp3quran.net/api/v3/reciters?language=ar');
@@ -154,20 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const suras = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
         document.getElementById('surah-select').innerHTML = suras.map((s, i) => `<option value="${i+1}">${s}</option>`).join('');
 
-        renderBtn.addEventListener('click', async () => {
-            loader.classList.remove('hidden');
-            const reciterId = document.getElementById('reciter-select').value;
-            const surahNum = document.getElementById('surah-select').value;
-            
-            // جلب البيانات المتزامنة
-            const audioUrl = await getSurahData(reciterId, surahNum);
-            versesText = await fetchVerses(surahNum, parseInt(document.getElementById('start-ayah').value), parseInt(document.getElementById('end-ayah').value));
-            
-            loader.classList.add('hidden');
-            render();
-            createVideoWithAudio(audioUrl); // البدء بدمج الصوت
-        });
+        renderBtn.addEventListener('click', startAction);
     }
-
     init();
 });
