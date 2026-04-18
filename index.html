@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيديوهات القرآن الكريم</title>
+    <title>فيديوهات القرآن - منصة التصميم الذكي</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
@@ -15,29 +15,34 @@
             <nav class="main-nav font-kufi">
                 <a href="#home">الرئيسية</a>
                 <a href="#creator">إنشاء تلاوة</a>
-                <a href="#videos">الفيديوهات</a>
+                <a href="#videos">المعرض العالمي</a>
             </nav>
         </div>
     </header>
 
     <section id="home" class="hero">
-        <h1 class="font-amiri neon-text">فيديوهات القرآن الكريم</h1>
+        <h1 class="font-amiri neon-text">صانع تلاوات القرآن الكريم</h1>
         <p class="font-amiri bism">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-        <p class="font-kufi desc">استعرض أحدث الفيديوهات وأنشئ تلاوتك الخاصة بواجهة متطورة.</p>
+        <p class="font-kufi desc">صمم فيديو تلاوتك الخاصة، اختر قارئك المفضل، وخصص مظهر الفيديو بجودة عالية.</p>
     </section>
 
     <section id="creator" class="section-container">
-        <h2 class="section-title font-amiri neon-text">إنشاء تلاوة مخصصة</h2>
+        <h2 class="section-title font-amiri neon-text">منصة الإنشاء المباشر</h2>
         <div class="creator-grid">
             
             <div class="control-panel glass-panel font-kufi">
                 <div class="form-group">
-                    <label>اختر القارئ</label>
+                    <label>القارئ المفضل</label>
                     <select id="reciter-select">
-                        <option value="maher">ماهر المعيقلي</option>
-                        <option value="yasser">ياسر الدوسري</option>
+                        <option value="">جاري تحميل القراء...</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label>السورة</label>
+                    <select id="surah-select"></select>
+                </div>
+
                 <div class="form-group flex-group">
                     <div>
                         <label>من آية</label>
@@ -45,32 +50,48 @@
                     </div>
                     <div>
                         <label>إلى آية</label>
-                        <input type="number" id="end-ayah" value="7" min="1">
+                        <input type="number" id="end-ayah" value="5" min="1">
                     </div>
                 </div>
-                <button id="generate-btn" class="neon-btn">إنشاء وتصدير الفيديو</button>
+
+                <div class="form-group">
+                    <label>خلفية الفيديو</label>
+                    <select id="bg-type">
+                        <option value="color">تدرج لوني إسلامي (Default)</option>
+                        <option value="url">رابط صورة (URL)</option>
+                        <option value="upload">رفع من جهازك</option>
+                    </select>
+                    <input type="text" id="bg-url-input" placeholder="https://example.com/image.jpg" class="hidden mt-2">
+                    <input type="file" id="bg-file-input" class="hidden mt-2" accept="image/*">
+                </div>
+
+                <button id="record-btn" class="neon-btn">بدء تسجيل الفيديو</button>
+                
                 <div id="progress-container" class="hidden">
+                    <p id="status-text" class="text-sm mb-2">جاري التسجيل...</p>
                     <div class="progress-bar"><div id="progress-fill"></div></div>
                 </div>
             </div>
 
             <div class="preview-panel glass-panel">
-                <h3 class="font-kufi">المعاينة الحية</h3>
-                <canvas id="video-canvas" width="1280" height="720"></canvas>
+                <h3 class="font-kufi mb-4">معاينة البث الحي (720p)</h3>
+                <div class="canvas-wrapper">
+                    <canvas id="video-canvas" width="1280" height="720"></canvas>
+                </div>
+                <p class="hint mt-2">ملاحظة: التسجيل يلتقط الحركة الظاهرة في نافذة المعاينة.</p>
             </div>
 
         </div>
     </section>
 
     <section id="videos" class="section-container">
-        <h2 class="section-title font-amiri neon-text">أحدث الفيديوهات</h2>
+        <h2 class="section-title font-amiri neon-text">استكشاف فيديوهات القراء</h2>
         <div id="videos-grid" class="videos-grid">
-            <div class="loading font-kufi">جاري تحميل الفيديوهات من الخادم...</div>
-        </div>
+            </div>
     </section>
 
     <footer class="font-kufi">
-        <p>جميع الحقوق محفوظة © فيديوهات القرآن | تنفيذ مباشر للبيانات</p>
+        <p>فيديوهات القرآن © 2026 | مدعوم بواسطة MP3Quran API</p>
     </footer>
 
     <script src="js/script.js"></script>
