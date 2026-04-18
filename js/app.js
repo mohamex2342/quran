@@ -1,128 +1,168 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. جلب الفيديوهات من API مباشرة
-    const API_URL = 'https://www.mp3quran.net/api/v3/videos?language=ar';
-    const videosGrid = document.getElementById('videos-grid');
-
-    async function fetchVideos() {
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
-            renderVideos(data.videos);
-        } catch (error) {
-            console.error('Error fetching videos:', error);
-            videosGrid.innerHTML = '<div class="loading font-kufi text-red">عذراً، حدث خطأ أثناء جلب البيانات. الرجاء المحاولة لاحقاً.</div>';
-        }
-    }
-
-    function renderVideos(recitersList) {
-        videosGrid.innerHTML = ''; // تفريغ حالة التحميل
-
-        // المرور على مصفوفة القراء والفيديوهات الخاصة بهم
-        recitersList.forEach(reciter => {
-            reciter.videos.forEach(video => {
-                const card = document.createElement('div');
-                card.className = 'video-card';
-                card.innerHTML = `
-                    <img src="${video.video_thumb_url}" alt="${reciter.reciter_name}" class="video-thumb" onerror="this.src='https://via.placeholder.com/300x200/0f172a/0df5d4?text=فيديو+قرآن'">
-                    <div class="video-info font-kufi">
-                        <h3>${reciter.reciter_name}</h3>
-                        <a href="${video.video_url}" target="_blank" class="video-link">مشاهدة المقطع</a>
-                    </div>
-                `;
-                videosGrid.appendChild(card);
-            });
-        });
-    }
-
-    // استدعاء الدالة عند تحميل الصفحة
-    fetchVideos();
-
-    // ==========================================
-    // 2. منطق Canvas ومنشئ الفيديو
-    // ==========================================
+    // العناصر الأساسية
+    const reciterSelect = document.getElementById('reciter-select');
+    const surahSelect = document.getElementById('surah-select');
+    const bgType = document.getElementById('bg-type');
+    const bgUrlInput = document.getElementById('bg-url-input');
+    const bgFileInput = document.getElementById('bg-file-input');
+    const recordBtn = document.getElementById('record-btn');
     const canvas = document.getElementById('video-canvas');
     const ctx = canvas.getContext('2d');
-    const generateBtn = document.getElementById('generate-btn');
-    const progressContainer = document.getElementById('progress-container');
-    const progressFill = document.getElementById('progress-fill');
+    
+    let backgroundImage = new Image();
+    let isRecording = false;
 
-    // رسم مبدئي على الـ Canvas
-    function initCanvas() {
-        // خلفية ذات تدرج داكن لتناسب التصميم
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        gradient.addColorStop(0, '#0f172a');
-        gradient.addColorStop(1, '#020617');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 1. جلب البيانات من الـ APIs
+    async function initData() {
+        // تحميل القراء
+        try {
+            const rRes = await fetch('https://mp3quran.net/api/v3/reciters?language=ar');
+            const rData = await rRes.json();
+            reciterSelect.innerHTML = rData.reciters.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+        } catch (e) { reciterSelect.innerHTML = '<option>تعذر تحميل القراء</option>'; }
 
-        // إطار نيون حول الـ Canvas من الداخل
-        ctx.strokeStyle = '#0df5d4';
-        ctx.lineWidth = 5;
-        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-
-        // نص المعاينة
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = 'bold 50px Amiri';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ', canvas.width / 2, canvas.height / 2);
+        // تحميل السور (114 سورة)
+        const surahs = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+        surahSelect.innerHTML = surahs.map((s, i) => `<option value="${i+1}">${i+1}. ${s}</option>`).join('');
+        
+        // تحميل معرض الفيديوهات
+        fetchGlobalVideos();
+        updateCanvas();
     }
 
-    initCanvas();
+    async function fetchGlobalVideos() {
+        const vGrid = document.getElementById('videos-grid');
+        try {
+            const res = await fetch('https://www.mp3quran.net/api/v3/videos?language=ar');
+            const data = await res.json();
+            vGrid.innerHTML = '';
+            data.videos.slice(0, 12).forEach(reciter => {
+                reciter.videos.forEach(v => {
+                    vGrid.innerHTML += `
+                        <div class="video-card">
+                            <img src="${v.video_thumb_url}" class="video-thumb">
+                            <div class="video-info font-kufi">
+                                <p>${reciter.reciter_name}</p>
+                                <a href="${v.video_url}" target="_blank" class="video-link">مشاهدة</a>
+                            </div>
+                        </div>`;
+                });
+            });
+        } catch (e) { vGrid.innerHTML = 'خطأ في التحميل'; }
+    }
 
-    // محاكاة تسجيل الفيديو بشكل مباشر
-    generateBtn.addEventListener('click', () => {
-        if (generateBtn.disabled) return;
+    // 2. منطق الرسم على الـ Canvas
+    function updateCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        generateBtn.disabled = true;
-        generateBtn.textContent = 'جاري المعالجة...';
-        progressContainer.classList.remove('hidden');
-        progressFill.style.width = '0%';
+        // أ. رسم الخلفية
+        if (bgType.value === 'color') {
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#064e3b');
+            grad.addColorStop(1, '#020617');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (backgroundImage.src) {
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0,0,0,0.6)'; // تعتيم
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
 
-        // التقاط الـ Stream من Canvas
-        const stream = canvas.captureStream(30); // 30 FPS كافية لتسجيل الشاشة
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        // ب. رسم النصوص
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#10b981';
+        ctx.font = 'bold 70px Amiri';
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#10b981';
+        
+        const surah = surahSelect.options[surahSelect.selectedIndex]?.text || '';
+        const reciter = reciterSelect.options[reciterSelect.selectedIndex]?.text || '';
+        const start = document.getElementById('start-ayah').value;
+        const end = document.getElementById('end-ayah').value;
+
+        ctx.fillText(surah, canvas.width / 2, canvas.height / 2 - 40);
+        
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#f1f5f9';
+        ctx.font = '35px Noto Kufi Arabic';
+        ctx.fillText(`بصوت القارئ: ${reciter}`, canvas.width / 2, canvas.height / 2 + 60);
+        
+        ctx.font = '22px Noto Kufi Arabic';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(`الآيات المحددة: من ${start} إلى ${end}`, canvas.width / 2, canvas.height / 2 + 120);
+
+        if (isRecording) requestAnimationFrame(updateCanvas);
+    }
+
+    // 3. التعامل مع المدخلات
+    bgType.addEventListener('change', () => {
+        bgUrlInput.classList.toggle('hidden', bgType.value !== 'url');
+        bgFileInput.classList.toggle('hidden', bgType.value !== 'upload');
+        updateCanvas();
+    });
+
+    bgUrlInput.addEventListener('input', () => {
+        backgroundImage.crossOrigin = "anonymous";
+        backgroundImage.src = bgUrlInput.value;
+        backgroundImage.onload = updateCanvas;
+    });
+
+    bgFileInput.addEventListener('change', (e) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            backgroundImage.src = ev.target.result;
+            backgroundImage.onload = updateCanvas;
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    [reciterSelect, surahSelect, document.getElementById('start-ayah'), document.getElementById('end-ayah')].forEach(el => {
+        el.addEventListener('change', updateCanvas);
+    });
+
+    // 4. منطق تسجيل الفيديو (Export)
+    recordBtn.addEventListener('click', () => {
+        if (isRecording) return;
+        
+        isRecording = true;
+        recordBtn.disabled = true;
+        recordBtn.textContent = 'جاري تسجيل المعاينة...';
+        document.getElementById('progress-container').classList.remove('hidden');
+        
+        const stream = canvas.captureStream(30); 
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         const chunks = [];
 
-        mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
+        recorder.ondataavailable = e => chunks.push(e.data);
+        recorder.onstop = () => {
             const blob = new Blob(chunks, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
-            
-            // إنشاء رابط التحميل
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'quran_video_export.webm';
-            document.body.appendChild(a);
+            a.download = `Quran_Video_${Date.now()}.webm`;
             a.click();
-            document.body.removeChild(a);
-
-            // إعادة ضبط الواجهة
-            generateBtn.disabled = false;
-            generateBtn.textContent = 'إنشاء وتصدير الفيديو';
-            progressContainer.classList.add('hidden');
-            progressFill.style.width = '0%';
+            
+            isRecording = false;
+            recordBtn.disabled = false;
+            recordBtn.textContent = 'بدء تسجيل الفيديو';
+            document.getElementById('progress-container').classList.add('hidden');
         };
 
-        // بدء التسجيل
-        mediaRecorder.start();
+        recorder.start();
+        updateCanvas(); // التأكد من استمرار الأنيميشن أثناء التسجيل
 
-        // محاكاة شريط التقدم وإيقاف التسجيل بعد 4 ثوانٍ
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 10;
-            progressFill.style.width = `${progress}%`;
-            
-            if (progress >= 100) {
-                clearInterval(interval);
-                mediaRecorder.stop(); // إيقاف التصدير
+        // محاكاة وقت التسجيل (مثلاً 5 ثوانٍ للمعاينة)
+        let prog = 0;
+        const itv = setInterval(() => {
+            prog += 2;
+            document.getElementById('progress-fill').style.width = prog + '%';
+            if (prog >= 100) {
+                clearInterval(itv);
+                recorder.stop();
             }
-        }, 400); 
+        }, 100);
     });
+
+    initData();
 });
